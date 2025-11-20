@@ -1,0 +1,19 @@
+EmailEscape/
+ ├── components/
+ │     ├── EmailInput.jsx
+ │     ├── Timer.jsx
+ │     ├── Result.jsx
+ │
+ ├── pages/
+ │     └── EmailEscapePage.jsx
+ │
+ ├── hooks/
+ │     └── useEmailEscape.js
+ │
+ ├── styles/
+ │     └── emailEscape.css
+ │
+ ├── utils/
+ │     └── validateEmail.js
+ │
+ └── index.js
