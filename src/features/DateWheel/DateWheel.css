@@ -1,7 +1,9 @@
 .wheel {
   position: relative;
-  width: 500px;
-  height: 500px;
+  width: 90vw;      
+  max-width: 500px;  
+  height: 90vw;     
+  max-height: 500px;
   border-radius: 50%;
   background: white;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), inset 0 2px 0 rgba(255, 255, 255, 0.8);
@@ -11,7 +13,6 @@
   margin-bottom: 30px;
   border: 8px solid #e0e0e0;
 }
-
 .wheel-layer {
   position: absolute;
   top: 0;
@@ -414,6 +415,7 @@
   border-radius: 20px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
+<<<<<<< HEAD
 
 /* === RESPONSIVE WHEEL FIXES === */
 
@@ -471,3 +473,5 @@
     padding: 12px 20px !important;
   }
 }
+=======
+>>>>>>> ff849e15c0f81b48e968aa46608fc3307c2364ce
