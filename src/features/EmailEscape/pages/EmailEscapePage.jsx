@@ -12,11 +12,14 @@ export default function EmailEscapePage() {
     const [atPos, setAtPos] = useState({ top: 0, left: 0 });
     const [gameActive, setGameActive] = useState(false);
     const [inactivityTime, setInactivityTime] = useState(0);
+    const [atCaught, setAtCaught] = useState(false);
     const containerRef = useRef(null);
     const flyingIntervalRef = useRef(null);
     const inactivityIntervalRef = useRef(null);
+    const speedRef = useRef(600); 
 
-    // Déplacer @ aléatoirement
+    const isEmailValid = isEmailComplete(username, domain);
+
     const moveAtRandom = useCallback(() => {
         if (!containerRef.current) return;
         const container = containerRef.current;
@@ -27,17 +30,25 @@ export default function EmailEscapePage() {
         setAtPos({ top, left });
     }, []);
 
-    // Démarrer le mouvement du @
     const startFlying = useCallback(() => {
+        if (isEmailValid) return;
         setAtFlying(true);
         setGameActive(true);
-        moveAtRandom(); // Position initiale aléatoire
-        
-        // Mouvement continu toutes les 2 secondes
-        flyingIntervalRef.current = setInterval(moveAtRandom, 2000);
-    }, [moveAtRandom]);
+        moveAtRandom();
+        speedRef.current = 600; 
 
-    // Arrêter le mouvement du @
+        if (flyingIntervalRef.current) clearInterval(flyingIntervalRef.current);
+
+        const fly = () => {
+            moveAtRandom();
+         if (speedRef.current > 300) speedRef.current -= 50;
+            clearInterval(flyingIntervalRef.current);
+            flyingIntervalRef.current = setInterval(fly, speedRef.current);
+        };
+
+        flyingIntervalRef.current = setInterval(fly, speedRef.current);
+    }, [moveAtRandom, isEmailValid]);
+
     const stopFlying = useCallback(() => {
         setAtFlying(false);
         setGameActive(false);
@@ -48,14 +59,8 @@ export default function EmailEscapePage() {
         }
     }, []);
 
-    // Vérifier si l'email est complet et valide
-    const isEmailValid = isEmailComplete(username, domain);
-
-    // Timer d'inactivité - 10 secondes seulement si l'email n'est pas complet
-    useEffect(() => {
+   useEffect(() => {
         if (isEmailValid) {
-            // Email complet - arrêter tout
-            stopFlying();
             if (inactivityIntervalRef.current) {
                 clearInterval(inactivityIntervalRef.current);
                 inactivityIntervalRef.current = null;
@@ -63,12 +68,11 @@ export default function EmailEscapePage() {
             return;
         }
 
-        // Démarrer le compte à rebours seulement si l'email n'est pas complet
         if (!gameActive && !inactivityIntervalRef.current) {
             inactivityIntervalRef.current = setInterval(() => {
                 setInactivityTime(prev => {
                     const newTime = prev + 1;
-                    if (newTime >= 10) {
+                    if (newTime >= 5) {
                         startFlying();
                         return 0;
                     }
@@ -83,16 +87,12 @@ export default function EmailEscapePage() {
                 inactivityIntervalRef.current = null;
             }
         };
-    }, [username, domain, gameActive, isEmailValid, startFlying, stopFlying]);
+    }, [isEmailValid, gameActive, startFlying]);
 
-    // Réinitialiser le timer quand l'utilisateur tape
     useEffect(() => {
-        if (!isEmailValid) {
-            setInactivityTime(0);
-        }
+        if (!isEmailValid) setInactivityTime(0);
     }, [username, domain, isEmailValid]);
 
-    // Nettoyage des intervals
     useEffect(() => {
         return () => {
             if (flyingIntervalRef.current) clearInterval(flyingIntervalRef.current);
@@ -102,33 +102,20 @@ export default function EmailEscapePage() {
 
     const handleAtClick = useCallback(() => {
         if (atFlying) {
-            // Le @ est attrapé - arrêter le mouvement
             stopFlying();
-        } else {
-            // Repositionner le @
-            moveAtRandom();
+            setAtCaught(true);
         }
-    }, [atFlying, stopFlying, moveAtRandom]);
+    }, [atFlying, stopFlying]);
 
     const getGameMessage = () => {
-        if (isEmailValid) {
-            return "✅ Email valide ! Le @ est sécurisé.";
-        }
-        
-        if (gameActive) {
-            return "🎯 Attrapez le @ qui s'échappe ! Cliquez dessus pour le capturer.";
-        }
-        
-        if (inactivityTime > 0) {
-            return `⏳ Le @ s'échappera dans ${10 - inactivityTime}s si l'email n'est pas complété...`;
-        }
-        
-        return "✍️ Commencez à taper votre email...";
+        if (isEmailValid && atCaught) return "✅ Email valide ! Le @ est sécurisé.";
+        if (gameActive) return "🎯 Attrapez le @ qui s'échappe ! Cliquez dessus pour le capturer.";
+        if (inactivityTime > 0) return `⏳ Le @ s'échappera dans ${5 - inactivityTime}s si l'email n'est pas complété...`;
     };
 
     return (
         <div className="email-escape-container" ref={containerRef}>
-            <h1>Email Escape</h1>
+            
             <div className="email-field">
                 <UsernameInput value={username} onChange={setUsername} />
                 <AtSymbol

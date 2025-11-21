@@ -1,13 +1,12 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import EmailEscapePage from "./features/EmailEscape";
+import React from "react";
+import Formulaire from "./pages/Formulaire";
+import "./App.css";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/email-escape" element={<EmailEscapePage />} />
-      </Routes>
-    </Router>
+    <div className="App">
+      <Formulaire />
+    </div>
   );
 }
 
