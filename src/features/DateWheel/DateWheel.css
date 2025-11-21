@@ -415,11 +415,8 @@
   border-radius: 20px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
-<<<<<<< HEAD
 
-/* === RESPONSIVE WHEEL FIXES === */
 
-/* الشاشات الصغيرة جداً: أقل من 480px */
 @media (max-width: 480px) {
   .wheel {
     width: 260px !important;
@@ -447,7 +444,6 @@
   }
 }
 
-/* الشاشات الصغيرة: أقل من 768px (تابلت صغير) */
 @media (max-width: 768px) {
   .wheel {
     width: 360px !important;
@@ -473,5 +469,3 @@
     padding: 12px 20px !important;
   }
 }
-=======
->>>>>>> ff849e15c0f81b48e968aa46608fc3307c2364ce
